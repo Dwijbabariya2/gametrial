@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Arcade Hub</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: #ffffff;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+    header {
+      margin-bottom: 20px;
+    }
+    input#search {
+      padding: 10px;
+      width: 80%;
+      max-width: 400px;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+    #player-container {
+      display: none;
+      margin: 0 auto 30px auto;
+      max-width: 900px;
+      background: #1e1e1e;
+      padding: 15px;
+      border-radius: 10px;
+    }
+    iframe {
+      width: 100%;
+      height: 500px;
+      border: none;
+      border-radius: 8px;
+      background: #000;
+    }
+    .controls {
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+    }
+    button {
+      padding: 10px 15px;
+      background: #6200ea;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover {
+      background: #3700b3;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 15px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .card {
+      background: #1e1e1e;
+      border-radius: 10px;
+      padding: 15px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .card:hover {
+      transform: scale(1.05);
+      background: #2c2c2c;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Arcade Hub</h1>
+    <input type="text" id="search" placeholder="Search games..." onkeyup="filterGames()">
+  </header>
+
+  <!-- Game Player Area -->
+  <div id="player-container">
+    <h2 id="current-game-title">Game Title</h2>
+    <iframe id="game-frame" src="" allowfullscreen></iframe>
+    <div class="controls">
+      <button onclick="closeGame()">Close Game</button>
+      <button onclick="goFullscreen()">Fullscreen</button>
+    </div>
+  </div>
+
+  <!-- Game Grid -->
+  <div class="grid" id="game-grid"></div>
+
+  <script>
+    // Add your games here
+    const games = [
+      {
+        title: "2048",
+        url: "https://play2048.co"
+      },
+      {
+        title: "Scratch Example",
+        url: "https://mit.edu"
+      }
+      // Copy and paste the block above to add more games
+    ];
+
+    const grid = document.getElementById("game-grid");
+    const playerContainer = document.getElementById("player-container");
+    const gameFrame = document.getElementById("game-frame");
+    const gameTitle = document.getElementById("current-game-title");
+
+    function renderGames(list) {
+      grid.innerHTML = "";
+      list.forEach(game => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `<h3>${game.title}</h3>`;
+        card.onclick = () => launchGame(game);
+        grid.appendChild(card);
+      });
+    }
+
+    function launchGame(game) {
+      gameTitle.innerText = game.title;
+      gameFrame.src = game.url;
+      playerContainer.style.display = "block";
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function closeGame() {
+      gameFrame.src = "";
+      playerContainer.style.display = "none";
+    }
+
+    function goFullscreen() {
+      if (gameFrame.requestFullscreen) {
+        gameFrame.requestFullscreen();
+      }
+    }
+
+    function filterGames() {
+      const query = document.getElementById("search").value.toLowerCase();
+      const filtered = games.filter(g => g.title.toLowerCase().includes(query));
+      renderGames(filtered);
+    }
+
+    // Load all games on startup
+    renderGames(games);
+  </script>
+
+</body>
+</html>
